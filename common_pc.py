@@ -1,3 +1,4 @@
+from email import header
 from sqlalchemy import create_engine    
 import pandas as pd
 from openpyxl import load_workbook
@@ -39,7 +40,7 @@ def make_df_plan_sum(engine, org_df, cur_date):
     try:
         df_plan_sum = org_df.iloc[21:22,d_cols_jobs_total].dropna()
         df_plan_sum['날짜'] = cur_date
-        df_plan_sum.to_sql(tb_name, con=engine, if_exists= 'append', index=False)
+        # df_plan_sum.to_sql(tb_name, con=engine, if_exists= 'append', index=False)
         return df_plan_sum
     
     except :
@@ -91,8 +92,8 @@ def make_df_plan_jobs(engine, org_df, cur_date):
         for i in range(0,len(jobs)):
             jobs[i].columns = jobs[i].iloc[0]
             jobs[i] = jobs[i].drop([jobs[i].index[0]])
-            jobs[i]['날짜'] = org_df.columns[1]
-            jobs[i].to_sql(tb_name+ str(i), con=engine, if_exists= 'append', index=False)
+            # jobs[i]['날짜'] = org_df.columns[1]
+            # jobs[i].to_sql(tb_name+ str(i), con=engine, if_exists= 'append', index=False)
         
         return jobs
     
@@ -117,12 +118,19 @@ def read_dfs_from_sql(engine, tb_name , cur_date):
         df_jobs.append(df_sql_jobs)
     return df_jobs
 
-def save_excel(src_path, tar_path , file , df, sht_name):
+def save_excel(df, sht_name):
+    src_path = r"D:\97. 업무공유파일\000. 계획/"
+    tar_path = src_path
+    file =  '03. 시간분석테이블.xlsx'
+
     book = load_workbook(src_path + file)
     writer = pd.ExcelWriter(tar_path + file, engine= 'openpyxl')
     writer.book = book
+    # df.to_excel(writer, sheet_name= sht_name,startrow=writer.sheets[sht_name].max_row  , index=False, header=False)
     df.to_excel(writer, sheet_name= sht_name, index=False)
     writer.save()
+    writer.close()
 
+# mode='a'
 
 
