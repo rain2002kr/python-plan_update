@@ -126,11 +126,30 @@ def save_excel(df, sht_name):
     book = load_workbook(src_path + file)
     writer = pd.ExcelWriter(tar_path + file, engine= 'openpyxl')
     writer.book = book
-    # df.to_excel(writer, sheet_name= sht_name,startrow=writer.sheets[sht_name].max_row  , index=False, header=False)
     df.to_excel(writer, sheet_name= sht_name, index=False)
     writer.save()
-    writer.close()
+    # writer.close()
+
+
+def read_df_from_timetable(sht_name):
+    src_path = r"D:\97. 업무공유파일\000. 계획/"
+    file =  '03. 시간분석테이블.xlsx'
+    src = src_path+file
+    
+    try:
+        df1 = pd.read_excel(src, sheet_name= sht_name)
+        return df1
+    except :
+        ERROR = f'ERROR READ {sht_name} NAME from EXCEL FILE'
+        print(f"CODE : {ERROR} ") 
 
 # mode='a'
+
+# def save_excel(src_path, tar_path , file , df, sht_name):
+#     book = load_workbook(src_path + file)
+#     writer = pd.ExcelWriter(tar_path + file, engine= 'openpyxl')
+#     writer.book = book
+#     df.to_excel(writer, sheet_name= sht_name, index=False)
+#     writer.save()
 
 

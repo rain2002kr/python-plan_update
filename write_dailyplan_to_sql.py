@@ -14,6 +14,8 @@ def main(start_date, cnt):
         sht_name = date_b 
         org_df, cur_date = common_pc.make_df_from_excel(sht_name)
         print(org_df)
+
+        
         
         df_plan_sum = common_pc.make_df_plan_sum(engine, org_df, cur_date)
         print(df_plan_sum)
@@ -29,6 +31,11 @@ def main(start_date, cnt):
         print(jobs[0])
         common_pc.save_excel( tdf, sht_name = 'plan_details')
         common_pc.save_excel( jobs[0], sht_name = 'plan_works')
+
+        ndf = common_pc.read_df_from_timetable('plan_works')
+        print(ndf)
+        ndf = common_pc.read_df_from_timetable('plan_details')
+        print(ndf)
 
         # tb_name = 'tb_plan_sum'
         # df1_sql_sum = common_pc.make_df_from_sql(engine, tb_name, cur_date)
@@ -74,7 +81,7 @@ def main(start_date, cnt):
     #         df_jobs = common_pc.read_dfs_from_sql(engine, tb_name , cur_date)
     #         print(df_jobs)
 
-start_date = '0703'
+start_date = '0702'
 cnt = 0
 main(start_date, cnt)
 
