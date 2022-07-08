@@ -16,10 +16,10 @@ def main(start_date, cnt):
         print(org_df)
         
         
-        df_plan_sum = common_pc.make_df_plan_sum(engine, org_df, cur_date)
+        df_plan_sum = common_pc.make_df_plan_sum(org_df, cur_date)
         print(df_plan_sum)
 
-        jobs = common_pc.make_df_plan_jobs(engine, org_df, cur_date)
+        jobs = common_pc.make_df_plan_jobs(org_df, cur_date)
         print(jobs)
 
         tdf = pd.concat([jobs[1], jobs[2],jobs[3],jobs[4],jobs[5],jobs[6]],axis=1)
