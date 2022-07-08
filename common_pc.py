@@ -27,7 +27,7 @@ def make_df_from_excel(sht_name):
         ERROR = f'ERROR READ {sht_name} NAME from EXCEL FILE'
         print(f"CODE : {ERROR} ") 
 
-def make_df_plan_sum(engine, org_df, cur_date):
+def make_df_plan_sum(org_df, cur_date):
     d_cols_jobs_total = []
     d_rows_jobs_total = [0]
     v_start_jobs_total = 11
@@ -39,8 +39,8 @@ def make_df_plan_sum(engine, org_df, cur_date):
         d_cols_jobs_total.append(i)
     try:
         df_plan_sum = org_df.iloc[21:22,d_cols_jobs_total].dropna()
-        df_plan_sum['날짜'] = cur_date
-        # df_plan_sum.to_sql(tb_name, con=engine, if_exists= 'append', index=False)
+        # df_plan_sum['날짜'] = cur_date
+        df_plan_sum.insert(0,"날짜", cur_date)
         return df_plan_sum
     
     except :
@@ -62,7 +62,7 @@ def make_df_from_sql(engine,tb_name, cur_date):
         print(f"CODE : {ERROR} ") 
         print(f"CODE : {query} ") 
 
-def make_df_plan_jobs(engine, org_df, cur_date):
+def make_df_plan_jobs(org_df, cur_date):
 
     d_cols_jobs_total = []
     d_rows_jobs_total = [0]
@@ -92,10 +92,12 @@ def make_df_plan_jobs(engine, org_df, cur_date):
         for i in range(0,len(jobs)):
             jobs[i].columns = jobs[i].iloc[0]
             jobs[i] = jobs[i].drop([jobs[i].index[0]])
-            # jobs[i]['날짜'] = org_df.columns[1]
-            # jobs[i].to_sql(tb_name+ str(i), con=engine, if_exists= 'append', index=False)
-        
-        return jobs
+            
+        tdf = pd.concat([jobs[1], jobs[2],jobs[3],jobs[4],jobs[5],jobs[6]],axis=1)
+        jobs[0].insert(0, '날짜', org_df.columns[1])
+        tdf.insert(0, '날짜', org_df.columns[1])
+
+        return jobs[0], tdf
     
     except :
         ERROR = f'make_df_plan_jobs : ERROR MAKE DateFrame from the Sequence'
