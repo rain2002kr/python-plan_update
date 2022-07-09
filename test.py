@@ -21,8 +21,7 @@ rdf = pd.read_excel(src_path+file, sheet_name = sht_name)
 print('테이블 읽어오기')
 print(rdf)
 
-ndf1 = df_plan_sum.copy()
-ndf1 = ndf1.iloc[0,1] = 220709
+ndf = pd.concat([rdf,df_plan_sum])
+print(ndf)
 
-print('테이블 복사')
-print(ndf1)
+

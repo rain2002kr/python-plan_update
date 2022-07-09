@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QLineEdit, QHBoxLayout, QVBoxLayout, QTableWidgetItem, QTableWidget, QGridLayout, QProgressBar
 from PyQt5.QtCore import QCoreApplication, QBasicTimer, Qt
-from write_dailyplan_to_sql import main , load_cur_excel
+from write_dailyplan_to_sql import main , load_cur_excel , load_time_excel,save_time_excel
 import common_pc
+import pandas as pd
 
 
 
@@ -51,7 +52,7 @@ class Exam(QWidget):
         self.setLayout(layout)
         
         self.setWindowTitle('하루 기록 저장프로그램')
-        self.setGeometry(0,0,1000,1000)
+        self.setGeometry(0,0,500,500)
         self.show()
 
     def main_process(self, text):
@@ -61,7 +62,17 @@ class Exam(QWidget):
         print(date)
         
         if text == 'time_load':
-            print('timeload fc')
+            tdf = load_time_excel(0)
+            print(tdf)
+            if tdf.empty:
+                print("tdf 값이없음")
+
+            tdf1 = load_time_excel(1)
+            print(tdf1)
+            if tdf1.empty:
+                print("tdf1 값이없음")
+
+
 
         if command == 'load':
             jobs=[]
@@ -83,9 +94,24 @@ class Exam(QWidget):
             # for i in range(len(df.index)):
             #     for j in range(len(df.columns)):
             #         self.datatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iget_value(i, j))))
+            tdf = load_time_excel()
+            # print(tdf)
+            # if tdf.isnull :
+            #     print('null')
+            #     save_time_excel(job0)
+            # else :
+            #     print('save')
+
+            tdf2 = pd.concat([tdf, job0])
+            save_time_excel(tdf2)
+            
 
         if command == 'save':
-            print('save fc ' + date)
+            # print('save fc ' + date)
+            print(job0)
+            print(tdf2)
+            tdf2 = pd.concat([tdf, job0])
+            print(tdf2)
 
 
         # main()
