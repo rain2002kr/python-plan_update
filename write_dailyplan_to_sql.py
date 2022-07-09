@@ -53,13 +53,19 @@ def load_cur_excel(date):
     # print(tdf)
     return df_plan_sum, job0, tdf
     
-def load_time_excel(sht):
+def load_time_excel():
     src = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/03. 시간분석테이블.xlsx"
-    return pd.read_excel(src, sheet_name=sht)
+    df1 = pd.read_excel(src, sheet_name=0)
+    df2 = pd.read_excel(src, sheet_name=1)
+    df3 = pd.read_excel(src, sheet_name=2)
+    return df1,df2,df3
 
 def save_time_excel(df):
     src = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/03. 시간분석테이블.xlsx"
-    df.to_excel(src,  index=False)
+    with pd.ExcelWriter('output.xlsx') as writer:  
+        df[0].to_excel(writer, sheet_name=0)
+        df[1].to_excel(writer, sheet_name=1)
+        df[2].to_excel(writer, sheet_name=2)
 
 
 

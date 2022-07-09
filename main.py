@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QLineEdit, QHBoxLayout, QVBoxLayout, QTableWidgetItem, QTableWidget, QGridLayout, QProgressBar
 from PyQt5.QtCore import QCoreApplication, QBasicTimer, Qt
-from write_dailyplan_to_sql import main , load_cur_excel , load_time_excel,save_time_excel
+from write_dailyplan_to_sql import main ,load_cur_excel ,load_time_excel, save_time_excel
 import common_pc
 import pandas as pd
 
@@ -62,26 +62,28 @@ class Exam(QWidget):
         print(date)
         
         if text == 'time_load':
-            tdf = load_time_excel(0)
-            print(tdf)
-            if tdf.empty:
-                print("tdf 값이없음")
+            jobs=[[],[],[]]
+            jobs[0], jobs[1], jobs[2] = load_time_excel()
+            
+            for i in range(0,2):
+                if not jobs[i].empty:
+                    print("jobs 값이 있음")
+                    print(jobs[i])
+                else:
+                    print("jobs 값이 없음")
+                    print(jobs[i])
 
-            tdf1 = load_time_excel(1)
-            print(tdf1)
-            if tdf1.empty:
-                print("tdf1 값이없음")
-
-
-
+            for k in range(0,len(self.tbw)):
+                self.tbw[k].setRowCount(len(jobs[k].index))
+                self.tbw[k].setColumnCount(len(jobs[k].columns))
+                self.tbw[k].setHorizontalHeaderLabels(jobs[k].columns)
+                for i in range(len(jobs[k].index)):
+                    for j in range(len(jobs[k].columns)):
+                        self.tbw[k].setItem(i,j,QTableWidgetItem(str(jobs[k].iloc[i, j])))
+            
         if command == 'load':
-            jobs=[]
-            # jobs[0], jobs[1], jobs[2] = load_cur_excel(date)
-            job0, job1, job2 = load_cur_excel(date)
-            jobs.append(job0)
-            jobs.append(job1)
-            jobs.append(job2)
-
+            jobs=[[],[],[]]
+            jobs[0], jobs[1], jobs[2] = load_cur_excel(date)
             
             for k in range(0,len(self.tbw)):
                 self.tbw[k].setRowCount(len(jobs[k].index))
@@ -91,30 +93,22 @@ class Exam(QWidget):
                     for j in range(len(jobs[k].columns)):
                         self.tbw[k].setItem(i,j,QTableWidgetItem(str(jobs[k].iloc[i, j])))
 
-            # for i in range(len(df.index)):
-            #     for j in range(len(df.columns)):
-            #         self.datatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iget_value(i, j))))
-            tdf = load_time_excel()
-            # print(tdf)
-            # if tdf.isnull :
-            #     print('null')
-            #     save_time_excel(job0)
-            # else :
-            #     print('save')
-
-            tdf2 = pd.concat([tdf, job0])
-            save_time_excel(tdf2)
-            
-
         if command == 'save':
-            # print('save fc ' + date)
-            print(job0)
-            print(tdf2)
-            tdf2 = pd.concat([tdf, job0])
-            print(tdf2)
+            newjobs=[[],[],[]]
+            jobs=[[],[],[]]
+            sumjobs = []
+            newjobs[0], newjobs[1], newjobs[2] = load_cur_excel(date)
+            jobs[0], jobs[1], jobs[2] = load_time_excel()
+            for i in range(0,2):
+                sumjob = pd.concat([jobs[i],newjobs[i]])
+                sumjobs.append(sumjob)
+            print(sumjobs)
+            # save_time_excel(sumjobs)
 
 
-        # main()
+
+
+            
 
 app = QApplication(sys.argv)
 w = Exam()
