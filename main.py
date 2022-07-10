@@ -99,14 +99,19 @@ class Exam(QWidget):
             sumjobs = []
             newjobs[0], newjobs[1], newjobs[2] = load_cur_excel(date)
             jobs[0], jobs[1], jobs[2] = load_time_excel()
-            for i in range(0,2):
-                sumjob = pd.concat([jobs[i],newjobs[i]])
-                sumjobs.append(sumjob)
-            print(sumjobs)
-            # save_time_excel(sumjobs)
+            
 
-
-
+            if not jobs[0].empty:
+                print("jobs 값이 있음")
+                for i in range(0,3):
+                    sumjob = pd.concat([jobs[i],newjobs[i]])
+                    print("CODE : SUMJOB")
+                    print(sumjob)
+                    sumjobs.append(sumjob)
+                save_time_excel(sumjobs[0],sumjobs[1],sumjobs[2])
+            else:
+                print("jobs 값이 없음")
+                save_time_excel(newjobs[0],newjobs[1],newjobs[2])
 
             
 

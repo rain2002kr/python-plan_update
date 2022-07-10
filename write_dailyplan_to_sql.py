@@ -60,14 +60,50 @@ def load_time_excel():
     df3 = pd.read_excel(src, sheet_name=2)
     return df1,df2,df3
 
-def save_time_excel(df):
-    src = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/03. 시간분석테이블.xlsx"
-    with pd.ExcelWriter('output.xlsx') as writer:  
-        df[0].to_excel(writer, sheet_name=0)
-        df[1].to_excel(writer, sheet_name=1)
-        df[2].to_excel(writer, sheet_name=2)
+def save_time_excel(df1,df2,df3):
+    src = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/"
+    file = "03. 시간분석테이블.xlsx"
+    file_b = "03. 시간분석테이블-backup.xlsx"
+    src_file = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/03. 시간분석테이블.xlsx"
+    sht = []
+    sht = read_sheets(src,file)
+    print(sht)
+    with pd.ExcelWriter(src_file) as writer:  
+        df1.to_excel(writer, sheet_name=sht[0], index=False)
+        df2.to_excel(writer, sheet_name=sht[1], index=False)
+        df3.to_excel(writer, sheet_name=sht[2], index=False)
+
+    with pd.ExcelWriter(src + file_b) as writer:  
+        df1.to_excel(writer, sheet_name=sht[0], index=False)
+        df2.to_excel(writer, sheet_name=sht[1], index=False)
+        df3.to_excel(writer, sheet_name=sht[2], index=False)
 
 
+# FUNCTION CODE : delete_target_sheet_by_number
+# src_path = 이 안에 들어 있는 모든 엑셀 파일의 타겟 sheet를 삭제한다.
+# excel        : path +엑셀파일.xlsx 
+# tar_sht_number : 시트번호, 첫번째 0, 두번째 1 ... n번째 n
+# comment      : 독립적으로 동작하고, 엑셀파일과 시트번호을 넣으면, 해당하는 시트가 삭제된다.      
+###############################################################################################    
+def delete_target_sheet_by_number(excel, tar_sht_number):
+    sht = []
+    wb = load_workbook(excel)
+
+    for item in wb.sheetnames:
+        sht.append(item)
+
+    wb.remove(wb[sht[tar_sht_number]])
+    wb.save(excel)
+
+# FUNCTION CODE = read_sheets() 
+def read_sheets(path, excel):
+        i = -1
+        wb = load_workbook(path + excel)
+        shts = []
+        for item in wb.sheetnames:
+            i = i + 1
+            shts.append(item)
+        return shts
 
 # start_date = '0702'
 # cnt = 0
