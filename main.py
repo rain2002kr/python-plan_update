@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QLineEdit, QHBoxLayout, QVBoxLayout, QTableWidgetItem, QTableWidget, QGridLayout, QProgressBar
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QLineEdit, QHBoxLayout, QVBoxLayout, QTableWidgetItem, QTableWidget, QGridLayout, QProgressBar, QLabel
 from PyQt5.QtCore import QCoreApplication, QBasicTimer, Qt
 from write_dailyplan_to_sql import main ,load_cur_excel ,load_time_excel, save_time_excel
 import common_pc
@@ -16,25 +16,42 @@ class Exam(QWidget):
     
     
     def defineItem(self):
+        self.lb_subject = QLabel('Hoons PLAN Daily update')
+        self.btn_init = QPushButton('init', self)
+        self.btn_save_server = QPushButton('save_server', self)
+        self.btn_load_server = QPushButton('load_server', self)
+        self.bar1 = QProgressBar(self)
+        self.bar1.setOrientation(Qt.Horizontal)
+
         self.btn_timeload = QPushButton('timeload', self)
         self.btn_load = QPushButton('load', self)
         self.btn_save = QPushButton('save', self)
         self.ed_date = QLineEdit('220702', self)
-        self.bar1 = QProgressBar(self)
-        self.bar1.setOrientation(Qt.Horizontal)
-
+        self.ed2_date = QLineEdit('', self)
+        
         self.hbox1 = QHBoxLayout()
-        self.hbox1.addWidget(self.btn_timeload)
-        self.hbox1.addWidget(self.btn_load)
-        self.hbox1.addWidget(self.btn_save)
-        self.hbox1.addWidget(self.ed_date)
-        self.hbox1.addWidget(self.bar1)
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+
+        self.hbox1.addWidget(self.lb_subject)
+        self.hbox2.addWidget(self.btn_init)
+        self.hbox2.addWidget(self.btn_save_server)
+        self.hbox2.addWidget(self.btn_load_server)
+
+        self.hbox2.addWidget(self.bar1)
+        self.hbox3.addWidget(self.btn_timeload)
+        self.hbox3.addWidget(self.btn_load)
+        self.hbox3.addWidget(self.btn_save)
+        self.hbox3.addWidget(self.ed_date)
+        self.hbox3.addWidget(self.ed2_date)
+        
 
         
     def functionCode(self):
+        self.btn_init.clicked.connect(lambda x: self.main_process('init'))
         self.btn_timeload.clicked.connect(lambda x: self.main_process('time_load'))
         self.btn_load.clicked.connect(lambda x: self.main_process('load'+ self.ed_date.text()))
-        self.btn_save.clicked.connect(lambda x: self.main_process('save'+ self.ed_date.text()))
+        self.btn_save.clicked.connect(lambda x: self.main_process('save'+ self.ed_date.text(), self.ed2_date.text()))
 
     def initUI(self):
         self.tbw = {}
@@ -44,10 +61,13 @@ class Exam(QWidget):
         # layout = QVBoxLayout()
         layout = QGridLayout()
         layout.setSpacing(10)
-        layout.addLayout(self.hbox1 ,0,0)
-        layout.addWidget(self.tbw[0],2,0)
-        layout.addWidget(self.tbw[1],3,0)
-        layout.addWidget(self.tbw[2],4,0)
+
+        # layout.addLayout(self.hbox1 ,0,0)
+        layout.addLayout(self.hbox2 ,1,0)
+        layout.addLayout(self.hbox3 ,2,0)
+        layout.addWidget(self.tbw[0],3,0)
+        layout.addWidget(self.tbw[1],4,0)
+        layout.addWidget(self.tbw[2],5,0)
         
         self.setLayout(layout)
         
@@ -55,13 +75,13 @@ class Exam(QWidget):
         self.setGeometry(0,0,500,500)
         self.show()
 
-    def main_process(self, text):
-        command = text[0:4]
-        date = text[4:]
+    def main_process(self, cmd, sht_num_cnt = 1):
+        command = cmd[0:4]
+        date = cmd[4:]
         print(command)
         print(date)
         
-        if text == 'time_load':
+        if cmd == 'time_load':
             jobs=[[],[],[]]
             jobs[0], jobs[1], jobs[2] = load_time_excel()
             
@@ -109,9 +129,18 @@ class Exam(QWidget):
                     print(sumjob)
                     sumjobs.append(sumjob)
                 save_time_excel(sumjobs[0],sumjobs[1],sumjobs[2])
-            else:
-                print("jobs 값이 없음")
-                save_time_excel(newjobs[0],newjobs[1],newjobs[2])
+        if cmd == 'init':
+            print("init ")
+        
+        if cmd == 'save_server':
+            print("save_server ")
+        
+        if cmd == 'load_server':
+            print("load_server ")
+
+        else:
+            print("jobs 값이 없음")
+            save_time_excel(newjobs[0],newjobs[1],newjobs[2])
 
             
 
