@@ -7,10 +7,27 @@ DEBUG_OFF = 0
 
 debug = DEBUG_OFF
 D_create_new_excel = DEBUG_OFF
-D_load_time_excel = DEBUG_OFF
-D_load_cur_plan_excel = DEBUG_OFF
+D_load_time_excel = DEBUG_ON
+D_load_cur_plan_excel = DEBUG_ON
 D_make_df_plan_sum = DEBUG_OFF
 D_make_df_plan_jobs = DEBUG_OFF
+
+# FUNCTION CODE = read_sheets() 
+# path         : 파일이 있는 경로를 지정한다. 
+# excel        : path +엑셀파일.xlsx 
+# return        : sheet 명을 배열 형태로 돌려준다. 
+# comment      : 독립적으로 동작하고, 경로와, 엑셀파일을 넣으면 해당하는 모든 시트를 읽는다.
+###############################################################################################    
+def read_sheets(path, excel):
+    i = -1
+    wb = load_workbook(path + excel)
+    shts = []
+    print(excel)
+    for item in wb.sheetnames:
+        i = i + 1
+        shts.append(item)
+        print(i, item)
+    return shts
 
 # FUNCTION CODE : create_new_excel
 # path = 이 안에 들어 있는 모든 엑셀 파일의 타겟 sheet를 삭제한다.
@@ -31,6 +48,8 @@ def create_new_excel():
         if debug or D_create_new_excel: 
             SUCCESS = f'create_new_excel : SUCCESS'
             print(f"CODE : {SUCCESS} ") 
+            read_sheets(path , file)
+
         
     except :
         if debug or D_create_new_excel: 
@@ -71,18 +90,25 @@ def load_time_excel():
 # cnt_sht_num : 현재날짜 부터 몇개의 시트를 읽어올것인지 파라미터
 # comment : 일일계획표에 지정된 시트를 모두 읽어와서 배열로 리턴한다. 
 ###############################################################################################    
-def load_cur_plan_excel(cnt_sht_num):
+def load_cur_plan_excel(cmd, sht_num_cnt=1, date='220701'):
     path = r"D:\97. 업무공유파일\000. 계획/"
     file = "01. 2022 일일계획표.xlsx"
     src = path + file
     frame = []
     try :
-        cnt_sht_num = cnt_sht_num
-        start_sht_num = 4
-        tar_sht_num = start_sht_num + cnt_sht_num
-        for i in range(start_sht_num, tar_sht_num):
-            df = pd.read_excel(src, sheet_name= i)
-            frame.append(df)
+        v_str_command = cmd
+        v_int_cnt_sht_num = int(sht_num_cnt)
+        v_str_date = date
+        v_int_start_sht_num = 4
+        v_int_tar_sht_num = v_int_start_sht_num + v_int_cnt_sht_num
+
+        if v_str_command == 'load_shts_by_number':    
+            for i in range(v_int_start_sht_num, v_int_tar_sht_num):
+                df = pd.read_excel(src, sheet_name= i)
+                frame.append(df)
+        elif v_str_command == 'load_sht_by_date':
+            df = pd.read_excel(src, sheet_name= v_str_date)
+            frame.append(df)    
 
 
         if debug or D_load_cur_plan_excel: 
@@ -90,7 +116,8 @@ def load_cur_plan_excel(cnt_sht_num):
             print(f"CODE : {SUCCESS} ") 
             # 디버그시 현재 날짜 출력 
             for i in range(0, len(frame)):
-                print(f"\tREAD SHT DATE : {frame[i].columns[1]}")    
+                print(f"\tREAD SHT DATE : {frame[i].columns[1]}") 
+                
         
         return frame
         

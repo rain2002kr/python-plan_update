@@ -20,7 +20,11 @@ try:
 # 
 # comment :  
 ###############################################################################################    
-    def make_df_plan(cnt_sht_num):
+    def make_df_plan(cmd, cnt_sht_num=1, date='220701'):
+        v_str_command = cmd
+        v_int_cnt_sht_num = cnt_sht_num
+        v_str_sht_date = date
+
         path = r"D:\97. 업무공유파일\000. 계획/"
         file = "01. 2022 일일계획표.xlsx"
         src = path + file
@@ -29,17 +33,12 @@ try:
         df_job1_frame = []
         df_others_frame = []
 
-        if int(cnt_sht_num) > 30 or int(cnt_sht_num) < 1 : 
-            v_int_cnt_sht_num = 1
-        else : 
-            v_int_cnt_sht_num = cnt_sht_num
-
-
-        
-
         try :
             # get 계획표 from 일일계획표, 현재날짜 + 갯수 
-            frame = md.load_cur_plan_excel(v_int_cnt_sht_num)
+            if v_str_command == 'load_shts_by_number':
+                frame = md.load_cur_plan_excel('load_shts_by_number', v_int_cnt_sht_num, v_str_sht_date)
+            else:
+                frame = md.load_cur_plan_excel('load_sht_by_date', v_int_cnt_sht_num, v_str_sht_date)    
             
             for i in range(0, len(frame)):
                 df_plan_sum = md.make_df_plan_sum(frame[i])
@@ -48,14 +47,19 @@ try:
                 df_job1_frame.append(df_plan_job1)
                 df_others_frame.append(df_plan_others)
             
+            
 
             if debug or D_make_df_plan: 
                 SUCCESS = f'make_df_plan : SUCCESS'
                 print(f"CODE : {SUCCESS} ")
+                print(f"LOAD BY: {v_str_command} ")
+
                 print(f"\tREAD SUM FRAME : {df_sum_frame}")     
                 print(f"\tREAD SUM FRAME : {df_job1_frame}")     
                 print(f"\tREAD SUM FRAME : {df_others_frame}")     
             
+            return df_sum_frame, df_job1_frame, df_others_frame
+            # return df_sum_frame, df_job1_frame
         except :
             if debug or D_make_df_plan: 
                 ERROR = f'make_df_plan : ERROR 없는 시트에 접근 하였음'
