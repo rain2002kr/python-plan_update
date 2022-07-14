@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QLineEdit, QHBoxLayout, QVBoxLayout, QTableWidgetItem, QTableWidget, QGridLayout, QProgressBar, QLabel, QSpinBox, QHeaderView
-from PyQt5.QtCore import QCoreApplication, QBasicTimer, Qt, QTimer, QTime
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QLineEdit, QHBoxLayout, QVBoxLayout, QTableWidgetItem, QTableWidget, QGridLayout, QProgressBar, QLabel, QSpinBox, QHeaderView, QSizePolicy
+from PyQt5.QtCore import QCoreApplication, QBasicTimer, Qt, QTimer, QTime,QSize
 import pandas as pd
 
 import process as ps
@@ -14,6 +14,28 @@ DEBUG_OFF = 0
 debug = DEBUG_OFF
 D_main_process = DEBUG_OFF
 
+### 사이즈 정책을 설정한 새로운 class를 생성합니다. ###
+class QPushButton(QPushButton):
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.setStyleSheet("QPushButton{color: white;\n"
+        #             "background-color:qlineargradient(spread:reflect, x1:1, y1:0, x2:0.995, y2:1, stop:0 rgba(218, 218, 218, 255), stop:0.305419 rgba(0, 7, 11, 255), stop:0.935961 rgba(2, 11, 18, 255), stop:1 rgba(240, 240, 240, 255));\n"
+        #             "border: 1px solid black;\n"
+        #             "border-radius: 20px;}\n"
+        # )
+        
+        
+
+# class QLabel(QLabel):
+#     def __init__(self, parent = None):
+#         super().__init__(parent)
+#         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+# class QLineEdit(QLineEdit):
+#     def __init__(self, parent = None):
+#         super().__init__(parent)
+#         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
 class Exam(QWidget):
     def __init__(self):
@@ -26,9 +48,10 @@ class Exam(QWidget):
     
     def defineItem(self):
         self.lb_subject = QLabel('Hoons PLAN Daily update')
-        self.btn_init = QPushButton('init', self)
-        self.btn_save_server = QPushButton('save_server', self)
-        self.btn_load_server = QPushButton('load_server', self)
+        # self.btn_init = QPushButton('init', self)
+        self.btn_init = QPushButton('init')
+        self.btn_save_server = QPushButton('save_server')
+        self.btn_load_server = QPushButton('load_server')
         self.bar1 = QProgressBar(self)
         self.bar1.setOrientation(Qt.Horizontal)
         self.bar1.setRange(0,30)
@@ -36,11 +59,11 @@ class Exam(QWidget):
         self.bar1_timer = QTimer()
         self.bar1_time = QTime(0,0,0)
 
-        self.btn_timeload = QPushButton('timeload', self)
-        self.btn_load = QPushButton('load', self)
-        self.btn_save = QPushButton('save', self)
-        self.btn_scr_clr = QPushButton('scr_clear', self)
-        self.ed_date = QLineEdit('220701', self)
+        self.btn_timeload = QPushButton('timeload')
+        self.btn_load = QPushButton('load')
+        self.btn_save = QPushButton('save')
+        self.btn_scr_clr = QPushButton('scr_clear')
+        self.ed_date = QLineEdit('220701')
         self.spin_date = QSpinBox()
         
         self.hbox1 = QHBoxLayout()
@@ -79,6 +102,15 @@ class Exam(QWidget):
                 "}\n"
                 "\n"
                 "")
+        self.btn_init.setMaximumHeight(200)
+        # self.btn_init.setStyleSheet("QPushButton{color: white;\n"
+        #             "background-color:qlineargradient(spread:reflect, x1:1, y1:0, x2:0.995, y2:1, stop:0 rgba(218, 218, 218, 255), stop:0.305419 rgba(0, 7, 11, 255), stop:0.935961 rgba(2, 11, 18, 255), stop:1 rgba(240, 240, 240, 255));\n"
+        #             "border: 1px solid black;\n"
+        #             "border-radius: 20px;}\n"
+        # )
+        # self.btn_save_server.setStyleSheet("QPushButton{color: white;\n"
+        #             "background-color: rgb(58, 134, 255);\n"
+        #             "border-radius: 5px;\n}")
         
     def UIconnectFC(self):
         self.btn_init.clicked.connect(lambda x: self.main_process('init'))
@@ -97,9 +129,9 @@ class Exam(QWidget):
         for i in range(0,3):
             self.tbw[i] = QTableWidget()
             
-
-        
-
+        # self.btn_init.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.btn_save_server.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # self.btn_load_server.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # layout = QVBoxLayout()
         self.spin_date.setMaximum(30)
@@ -156,13 +188,6 @@ class Exam(QWidget):
             jobs=[[],[],[]]
             jobs[0], jobs[1], jobs[2] = md.load_time_excel()
             self.tbw = u_md.set_df_table_2_arr(self, jobs)
-            # self.tbw[0].horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-            self.tbw[0].setColumnWidth(1, 15)
-            self.tbw[0].setColumnWidth(2, 15)
-            self.tbw[0].setColumnWidth(3, 15)
-            self.tbw[0].item(3, 5).setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-            self.tbw[0].item(3, 5).setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
-
 
 
         elif v_str_command == 'load':
@@ -239,3 +264,4 @@ w = Exam()
 # 윈도우창에 이벤트처리정보를 위젯 객체에 넘겨준다. 
 # 메인 루프라고 한다. app.exec_() 끝나야 sys.exit 함수가 호출된다. 
 sys.exit(app.exec_())
+

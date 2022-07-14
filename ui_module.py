@@ -26,7 +26,10 @@ try:
                     self.tbw[k].setRowCount(len(jobs[k]))
                     self.tbw[k].setColumnCount(len(jobs[k][i].columns))
                     self.tbw[k].setHorizontalHeaderLabels(jobs[k][i].columns)
-        
+                    # 폭 자동조절 
+                    self.tbw[k].resizeColumnsToContents()
+                    # 날짜 폭 고정조절 
+                    self.tbw[k].setColumnWidth(0, 85)
             for i in range(0,len(jobs)):
                     # print(f'START {l}')
                     for j in range(0,len(jobs[i])):
@@ -34,7 +37,9 @@ try:
                         for k in range(0,len(jobs[i][j].columns)):
                             # print(f'J {j}')
                             # print(jobs[i][j].iloc[0,k])
-                            self.tbw[i].setItem(j,k,QTableWidgetItem(str(jobs[i][j].iloc[0, k])))    
+                            self.tbw[i].setItem(j,k,QTableWidgetItem(str(jobs[i][j].iloc[0, k]))) 
+                            # 가운데 정렬    
+                            self.tbw[i].item(j, k).setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
             if debug or D_set_df_table_3_arr: 
                 SUCCESS = f'set_df_table_3_arr : SUCCESS'
                 print(f"CODE : {SUCCESS} ")
@@ -60,10 +65,16 @@ try:
                 self.tbw[k].setRowCount(len(jobs[k].index))
                 self.tbw[k].setColumnCount(len(jobs[k].columns))
                 self.tbw[k].setHorizontalHeaderLabels(jobs[k].columns)
+                # 폭 자동조절 
+                self.tbw[k].resizeColumnsToContents()
+                # 날짜 폭 고정조절 
+                self.tbw[k].setColumnWidth(0, 85)
         
                 for i in range(len(jobs[k].index)):
                         for j in range(len(jobs[k].columns)):
                             self.tbw[k].setItem(i,j,QTableWidgetItem(str(jobs[k].iloc[i, j])))
+                            # 가운데 정렬 
+                            self.tbw[k].item(i, j).setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
 
             if debug or D_set_df_table_2_arr: 
                 SUCCESS = f'set_df_table_2_arr : SUCCESS'
