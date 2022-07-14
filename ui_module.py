@@ -16,7 +16,7 @@ try:
 # 
 # 
 # 
-# 
+# 3 array 타입 
 # comment :  PLAN 에 통합시트시간, 업무시간, 학습 및 나머지 시간을 읽어와서 TABLE 에 뿌려준다. 
 ###############################################################################################    
     def set_df_table_3_arr(self, jobs):
@@ -51,7 +51,7 @@ try:
 # 
 # 
 # 
-# 
+# 2 array 타입 
 # comment :  PLAN 에 통합시트시간, 업무시간, 학습 및 나머지 시간을 읽어와서 TABLE 에 뿌려준다. 
 ###############################################################################################    
     def set_df_table_2_arr(self, jobs):
@@ -74,7 +74,9 @@ try:
         except :
             if debug or D_set_df_table_2_arr: 
                 ERROR = f'set_df_table_2_arr : ERROR'
-                print(f"CODE : {ERROR} ")     
+                print(f"CODE : {ERROR} ")
+    
+                    
 except Exception as ex:
     print('error' + str(ex))
     

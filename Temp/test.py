@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 import openpyxl 
 import numpy as np
-import common_pc
+import Temp.common_pc as common_pc
 
 sht_name = '220708'
 

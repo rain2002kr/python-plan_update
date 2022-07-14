@@ -2,7 +2,7 @@ from dataclasses import replace
 from sqlalchemy import create_engine    
 import pandas as pd
 from openpyxl import load_workbook
-import common_pc
+import Temp.common_pc as common_pc
 
 
 # 엑셀 저장 리팩터링 필요 
