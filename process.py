@@ -7,8 +7,6 @@ DEBUG_ON = 1
 DEBUG_OFF = 0
 
 debug = DEBUG_OFF
-
-
 D_make_df_plan = DEBUG_OFF
 
 try:
@@ -46,27 +44,23 @@ try:
                 df_sum_frame.append(df_plan_sum)
                 df_job1_frame.append(df_plan_job1)
                 df_others_frame.append(df_plan_others)
-            
-            
 
             if debug or D_make_df_plan: 
                 SUCCESS = f'make_df_plan : SUCCESS'
                 print(f"CODE : {SUCCESS} ")
                 print(f"LOAD BY: {v_str_command} ")
-
                 print(f"\tREAD SUM FRAME : {df_sum_frame}")     
                 print(f"\tREAD SUM FRAME : {df_job1_frame}")     
                 print(f"\tREAD SUM FRAME : {df_others_frame}")     
             
             return df_sum_frame, df_job1_frame, df_others_frame
-            # return df_sum_frame, df_job1_frame
+            
         except :
             if debug or D_make_df_plan: 
                 ERROR = f'make_df_plan : ERROR 없는 시트에 접근 하였음'
                 print(f"CODE : {ERROR} ")        
-
-
     
+
     #######################################################################################################
     # MAIN CODE START 
     

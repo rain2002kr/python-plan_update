@@ -6,11 +6,16 @@ DEBUG_ON = 1
 DEBUG_OFF = 0
 
 debug = DEBUG_OFF
-D_create_new_excel = DEBUG_OFF
-D_load_time_excel = DEBUG_ON
-D_load_cur_plan_excel = DEBUG_ON
+D_read_sheets = DEBUG_OFF
+D_create_new_excel = DEBUG_ON
+D_load_time_excel = DEBUG_OFF
+D_load_cur_plan_excel = DEBUG_OFF
 D_make_df_plan_sum = DEBUG_OFF
 D_make_df_plan_jobs = DEBUG_OFF
+D_make_df_from_arr = DEBUG_OFF
+D_update_df_from_arr = DEBUG_OFF
+D_save_time_excel = DEBUG_OFF
+
 
 # FUNCTION CODE = read_sheets() 
 # path         : 파일이 있는 경로를 지정한다. 
@@ -22,12 +27,20 @@ def read_sheets(path, excel):
     i = -1
     wb = load_workbook(path + excel)
     shts = []
-    print(excel)
-    for item in wb.sheetnames:
-        i = i + 1
-        shts.append(item)
-        print(i, item)
-    return shts
+    try :
+        for item in wb.sheetnames:
+            i = i + 1
+            shts.append(item)
+        if debug or D_read_sheets: 
+            SUCCESS = f'read_sheets : SUCCESS'
+            print(f"CODE : {SUCCESS} ") 
+            print(f"CODE : {shts} ") 
+        return shts
+    except :
+        if debug or D_read_sheets: 
+            ERROR = f'read_sheets : ERROR 파일확장자가 지정되지않음.EX) .xlsx'
+            print(f"CODE : {ERROR} ")     
+    
 
 # FUNCTION CODE : create_new_excel
 # path = 이 안에 들어 있는 모든 엑셀 파일의 타겟 sheet를 삭제한다.
@@ -37,7 +50,7 @@ def read_sheets(path, excel):
 ###############################################################################################    
 def create_new_excel():
     path = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/"
-    file = "03. 시간분석테이블-테스트.xlsx"
+    file = "03. 시간분석테이블.xlsx"
     df = pd.DataFrame()
     sht =['통합','업무','기타']
     try :
@@ -65,7 +78,7 @@ def create_new_excel():
 ###############################################################################################    
 def load_time_excel():
     path = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/"
-    file = "03. 시간분석테이블-테스트.xlsx"
+    file = "03. 시간분석테이블.xlsx"
     src = path + file
     try :
         df1 = pd.read_excel(src, sheet_name= 0)
@@ -75,6 +88,9 @@ def load_time_excel():
         if debug or D_load_time_excel: 
             SUCCESS = f'load_time_excel : SUCCESS'
             print(f"CODE : {SUCCESS} ") 
+            print(f"CODE : {df1} ") 
+            print(f"CODE : {df2} ") 
+            print(f"CODE : {df3} ") 
         
         return df1, df2, df3
         
@@ -149,6 +165,7 @@ def make_df_plan_sum(org_df):
         if debug or D_make_df_plan_sum: 
             SUCCESS = f'make_df_plan_sum : SUCCESS'
             print(f"CODE : {SUCCESS} ") 
+            print(f"CODE : {df_plan_sum} ") 
         
         return df_plan_sum
     
@@ -197,6 +214,9 @@ def make_df_plan_jobs(org_df):
         if debug or D_make_df_plan_jobs: 
             SUCCESS = f'make_df_plan_jobs : SUCCESS'
             print(f"CODE : {SUCCESS} ") 
+            print(f"CODE : {v_arr_jobs[0]} ") 
+            print(f"CODE : {df_job_others} ") 
+
 
         return v_arr_jobs[0], df_job_others
     
@@ -204,4 +224,99 @@ def make_df_plan_jobs(org_df):
         if debug or D_make_df_plan_jobs: 
             ERROR = f'make_df_plan_jobs : ERROR 데이터 프레임 만들기 실패'
             print(f"CODE : {ERROR} ") 
+
+# FUNCTION CODE : D_make_df_from_arr
+# 
+# 
+# comment : df 배열을 concat 해서 돌려주는 함수, update 가 아닌 그대로 저장
+###############################################################################################    
+def make_df_from_arr(arr_df_frame):
+    v_arr_jobs = arr_df_frame
+    v_df_jobs = [[],[],[]]
+    
+    
+    try:
+        for i in range(0,len(v_arr_jobs)):
+                v_df_jobs[i] = v_arr_jobs[i][0]
+                for j in range(0,len(v_arr_jobs[i])):
+                    v_df_jobs[i] = pd.concat([v_df_jobs[i],v_arr_jobs[i][j]],axis=0)
+                    v_df_jobs[i] = v_df_jobs[i].drop_duplicates("날짜").reset_index(drop=True)
         
+
+        if debug or D_make_df_from_arr: 
+            SUCCESS = f'make_df_from_arr : SUCCESS'
+            print(f"CODE : {SUCCESS} ") 
+            print(f"CODE : {v_df_jobs} ") 
+        
+        return v_df_jobs
+    
+    except :
+        if debug or D_make_df_from_arr: 
+            ERROR = f'make_df_from_arr : ERROR DateFrame from the Sequence'
+            print(f"CODE : {ERROR} ") 
+
+# FUNCTION CODE : D_update_df_from_arr
+# 
+# 
+# comment : df 배열을 concat 해서 돌려주는 함수 
+###############################################################################################    
+def update_df_from_arr(arr_df_frame):
+    v_arr_jobs = arr_df_frame
+    v_df_jobs = [[],[],[]]
+    v_df_time_jobs = load_time_excel()
+    
+    try:
+        for i in range(0,len(v_arr_jobs)):
+                v_df_jobs[i] = v_df_time_jobs[i]
+                for j in range(0,len(v_arr_jobs[i])):
+                    v_df_jobs[i] = pd.concat([v_df_jobs[i],v_arr_jobs[i][j]],axis=0)
+                    v_df_jobs[i] = v_df_jobs[i].drop_duplicates("날짜").reset_index(drop=True)
+
+        if debug or D_update_df_from_arr: 
+            SUCCESS = f'update_df_from_arr : SUCCESS'
+            print(f"CODE : {SUCCESS} ") 
+            print(f"CODE : {v_df_jobs} ") 
+        
+        return v_df_jobs
+    
+    except :
+        if debug or D_update_df_from_arr: 
+            ERROR = f'update_df_from_arr : ERROR DateFrame from the Sequence'
+            print(f"CODE : {ERROR} ") 
+
+
+
+# FUNCTION CODE : save_time_excel
+# path 
+# file        : 
+# comment : 
+###############################################################################################    
+
+def save_time_excel(df1,df2,df3):
+    src = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/"
+    file = "03. 시간분석테이블.xlsx"
+    file_b = "03. 시간분석테이블-backup.xlsx"
+    src_file = r"D:\97. 업무공유파일\000. 계획\01. 시간분석테이블/03. 시간분석테이블.xlsx"
+    sht = []
+    sht = read_sheets(src,file)
+    
+    try:
+        if debug or D_save_time_excel:
+            SUCCESS = f'save_time_excel : SUCCESS'
+            print(f"CODE : {SUCCESS} ") 
+            print(f"CODE : {sht} ") 
+
+        with pd.ExcelWriter(src_file) as writer:  
+            df1.to_excel(writer, sheet_name=sht[0], index=False)
+            df2.to_excel(writer, sheet_name=sht[1], index=False)
+            df3.to_excel(writer, sheet_name=sht[2], index=False)
+
+        with pd.ExcelWriter(src + file_b) as writer:  
+            df1.to_excel(writer, sheet_name=sht[0], index=False)
+            df2.to_excel(writer, sheet_name=sht[1], index=False)
+            df3.to_excel(writer, sheet_name=sht[2], index=False)
+    
+    except :
+        if debug or D_save_time_excel:
+            ERROR = f'save_time_excel : ERROR 타임시트 엑셀에 저장실패'
+            print(f"CODE : {ERROR} ") 

@@ -8,6 +8,7 @@ from write_dailyplan_to_sql import main ,load_cur_excel ,load_time_excel, save_t
 # import common_pc
 import module as md
 import process as ps
+import ui_module as u_md
 import pandas as pd
 
 DEBUG_ON = 1
@@ -115,15 +116,8 @@ class Exam(QWidget):
             print('time_load')
             jobs=[[],[],[]]
             jobs[0], jobs[1], jobs[2] = md.load_time_excel()
+            self.tbw = u_md.set_df_table_2_arr(self, jobs)
             
-            for k in range(0,len(self.tbw)):
-                self.tbw[k].setRowCount(len(jobs[k].index))
-                self.tbw[k].setColumnCount(len(jobs[k].columns))
-                self.tbw[k].setHorizontalHeaderLabels(jobs[k].columns)
-                for i in range(len(jobs[k].index)):
-                    for j in range(len(jobs[k].columns)):
-                        self.tbw[k].setItem(i,j,QTableWidgetItem(str(jobs[k].iloc[i, j]))) 
-
 
         elif v_str_command == 'load':
             print('load')
@@ -132,82 +126,27 @@ class Exam(QWidget):
                 jobs[0] ,jobs[1], jobs[2] = ps.make_df_plan('load_shts_by_number', v_int_sht_num_cnt,  v_int_date)
             else :
                 jobs[0], jobs[1], jobs[2] = ps.make_df_plan('load_sht_by_date', v_int_sht_num_cnt,  v_int_date)
+            self.tbw = u_md.set_df_table_3_arr(self, jobs)
             
-
-            for k in range(0,len(self.tbw)):
-                for i in range(0,len(jobs[k])):
-                    self.tbw[k].setRowCount(len(jobs[k]))
-                    self.tbw[k].setColumnCount(len(jobs[k][i].columns))
-                    self.tbw[k].setHorizontalHeaderLabels(jobs[k][i].columns)
-            
-            for i in range(0,len(jobs)):
-                # print(f'START {l}')
-                for j in range(0,len(jobs[i])):
-                    # print(f'I V {i}')
-                    for k in range(0,len(jobs[i][j].columns)):
-                        # print(f'J {j}')
-                        print(jobs[i][j].iloc[0,k])
-                        self.tbw[i].setItem(j,k,QTableWidgetItem(str(jobs[i][j].iloc[0, k])))    
 
         elif v_str_command == 'save':
             print('save')
+            jobs =[[],[],[]]
+            if v_int_sht_num_cnt > 1: 
+                jobs[0] ,jobs[1], jobs[2] = ps.make_df_plan('load_shts_by_number', v_int_sht_num_cnt,  v_int_date)
+            else :
+                jobs[0], jobs[1], jobs[2] = ps.make_df_plan('load_sht_by_date', v_int_sht_num_cnt,  v_int_date)
+            
+            df_jobs = md.update_df_from_arr(jobs)
 
+            md.save_time_excel(df_jobs[0], df_jobs[1], df_jobs[2])
+
+            self.tbw = u_md.set_df_table_3_arr(self, jobs)
 
         else:
             print("jobs 값이 없음")
 
 
-            # save_time_excel(newjobs[0],newjobs[1],newjobs[2])
-            # jobs=[[],[],[]]
-            # jobs[0], jobs[1], jobs[2] = load_time_excel()
-            
-            # for i in range(0,2):
-            #     if not jobs[i].empty:
-            #         print("jobs 값이 있음")
-            #         print(jobs[i])
-            #     else:
-            #         print("jobs 값이 없음")
-            #         print(jobs[i])
-
-            # for k in range(0,len(self.tbw)):
-            #     self.tbw[k].setRowCount(len(jobs[k].index))
-            #     self.tbw[k].setColumnCount(len(jobs[k].columns))
-            #     self.tbw[k].setHorizontalHeaderLabels(jobs[k].columns)
-            #     for i in range(len(jobs[k].index)):
-            #         for j in range(len(jobs[k].columns)):
-            #             self.tbw[k].setItem(i,j,QTableWidgetItem(str(jobs[k].iloc[i, j])))
-            
-        # if command == 'load':
-            # jobs=[[],[],[]]
-            # jobs[0], jobs[1], jobs[2] = load_cur_excel(date)
-            
-            # for k in range(0,len(self.tbw)):
-            #     self.tbw[k].setRowCount(len(jobs[k].index))
-            #     self.tbw[k].setColumnCount(len(jobs[k].columns))
-            #     self.tbw[k].setHorizontalHeaderLabels(jobs[k].columns)
-            #     for i in range(len(jobs[k].index)):
-            #         for j in range(len(jobs[k].columns)):
-            #             self.tbw[k].setItem(i,j,QTableWidgetItem(str(jobs[k].iloc[i, j])))
-
-        # if command == 'save':
-            # newjobs=[[],[],[]]
-            # jobs=[[],[],[]]
-            # sumjobs = []
-            # newjobs[0], newjobs[1], newjobs[2] = load_cur_excel(date)
-            # jobs[0], jobs[1], jobs[2] = load_time_excel()
-            
-
-            # if not jobs[0].empty:
-            #     print("jobs 값이 있음")
-            #     for i in range(0,3):
-            #         sumjob = pd.concat([jobs[i],newjobs[i]])
-            #         print("CODE : SUMJOB")
-            #         print(sumjob)
-            #         sumjobs.append(sumjob)
-            #     save_time_excel(sumjobs[0],sumjobs[1],sumjobs[2])
-        
-
-        
             
 
 app = QApplication(sys.argv)
