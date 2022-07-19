@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 # from sre_constants import SUCCESS
 import pandas as pd
 from openpyxl import load_workbook
+import os 
 DEBUG_ON = 1
 DEBUG_OFF = 0
 
@@ -65,13 +66,11 @@ def load_time_excel_from_server():
 # comment      : 서버 연결, ORM 이용해서 SQL 서버에 연결한다. 
 ###############################################################################################    
 def connect_sql_server():
-    info_siem_name = ['rain2002kr','Showme0022^^','siemens2020.synology.me',5307 ,'PLAN_DB' ]
-
-    USER = info_siem_name[0]
-    PASSWORD= info_siem_name[1]
-    HOST= info_siem_name[2]
-    PORT =info_siem_name[3]
-    DATABASE= info_siem_name[4]
+    USER = os.getenv('USER')
+    PASSWORD= os.getenv('PASSWORD')
+    HOST= os.getenv('HOST')
+    PORT =os.getenv('PORT')
+    DATABASE= os.getenv('DATABASE')
 
     try :
         connection_string = "mysql+pymysql://%s:%s@%s:%s/%s" % (USER, PASSWORD, HOST, PORT, DATABASE)
@@ -112,6 +111,9 @@ def save_time_excel_to_server():
         v_df_arr[0].to_sql(tb_name1, con=engine,if_exists='replace', index=False)
         v_df_arr[1].to_sql(tb_name2, con=engine,if_exists='replace', index=False)
         v_df_arr[2].to_sql(tb_name3, con=engine,if_exists='replace', index=False)
+        
+                
+        
     except :
         if debug or D_save_time_excel_to_server: 
             ERROR = f'save_time_excel_to_server : ERROR '

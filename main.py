@@ -168,19 +168,22 @@ class Exam(QWidget):
         
         elif v_str_command == 'save_server':
             print("save_server ")
-            self.bar_timer_on("start",30)
+            
+            self.bar_timer_on("start",50)
             md.save_time_excel_to_server()
+
+            
 
         
         elif v_str_command == 'load_server':
             print("load_server ")
-            self.bar_timer_on("start",30)
             df_jobs=[[],[],[]]
             df_jobs[0], df_jobs[1], df_jobs[2] = md.load_time_excel_from_server()
 
             md.save_time_excel(df_jobs[0], df_jobs[1], df_jobs[2])
-
+            self.bar_timer_on("start",10)
             self.tbw = u_md.set_df_table_2_arr(self, df_jobs)
+            
 
         elif v_str_command == 'time_load':
             print('time_load')
