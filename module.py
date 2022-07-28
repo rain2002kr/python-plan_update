@@ -264,6 +264,7 @@ def make_df_plan_sum(org_df):
 
         df_plan_sum = org_df.iloc[SUM_JOBS_FST_ROW : SUM_JOBS_END_ROW, v_arr_sum_jobs_col_addr].dropna()
         df_plan_sum.insert(0,"날짜", v_str_cur_date)
+        df_plan_sum["날짜"] = df_plan_sum["날짜"].apply(lambda x: pd.Timestamp(x).strftime("%Y-%m-%d"))
         
         
         if debug or D_make_df_plan_sum: 
@@ -315,6 +316,8 @@ def make_df_plan_jobs(org_df):
         # insert 날짜 
         v_arr_jobs[0].insert(0, '날짜', v_str_cur_date)
         df_job_others.insert(0, '날짜', v_str_cur_date)
+        v_arr_jobs[0]["날짜"] = v_arr_jobs[0]["날짜"].apply(lambda x: pd.Timestamp(x).strftime("%Y-%m-%d"))
+        df_job_others["날짜"] = df_job_others["날짜"].apply(lambda x: pd.Timestamp(x).strftime("%Y-%m-%d"))
         
         if debug or D_make_df_plan_jobs: 
             SUCCESS = f'make_df_plan_jobs : SUCCESS'
